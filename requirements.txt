@@ -1,0 +1,8 @@
+flask
+flask-sqlalchemy
+flask-restful
+sqlalchemy
+flask-marshmallow
+marshmallow-sqlalchemy
+# Flask-Rest-JSONAPI
+# flask-jwt-simple
