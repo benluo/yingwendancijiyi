@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Api
-from models import db
 from resources import *
+
 
 def create_app():
     app = Flask(__name__)
@@ -13,6 +13,7 @@ def create_app():
     api.add_resource(WordByEnWordResource, '/<string:enWord>')
     api.add_resource(QueryResource, '/q')
     return app
+
 
 if __name__ == '__main__':
     app = create_app()

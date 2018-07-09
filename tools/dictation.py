@@ -3,38 +3,57 @@ import sqlite3
 import time
 import string
 import sys
+import random
 
 conn = sqlite3.connect('../words.db')
 c = conn.cursor()
 repeatTime = 2
 
-choice = input("Dictation in Order(input O) or in Random(input R)?")
-if choice in ['o','O']:
-    choice = input("Please select ")
-elif choice in ['r','R']:
-    choice = input("Please input how many words you want to dictation. Please input one number in range of 1 to 627.")
-else:
-    print ("Not right choice. Bye.")
-    sys.exit()
+print("Please select the first charactors of word. \
+e.g. a, b, c, or a-c, or a, b, c, m-o (like you do in M$ Word print dialog)")
+choice = input()
 
-for letter in string.ascii_lowercase:
-    select = "SELECT id, voice,enword FROM words where enword like \"{}%\" order by id".format(letter)
+# parse input to letters range
+wordRange = list(map(lambda x: x.strip(' '), choice.split(",")))
+letters = []
+for letter in wordRange:
+    tmpLetters = letter.split('-')
+    if len(tmpLetters) == 1 and len(letter) == 1:
+        letters.append(letter)
+    elif len(tmpLetters) == 2 and len(tmpLetters[0]) == 1 and len(tmpLetters[1]) == 1 and tmpLetters[0] < tmpLetters[1]:
+        for l in range(ord(tmpLetters[0]), ord(tmpLetters[1]) + 1):
+            letters.append(chr(l))
+    else:
+        print("Not right choice. Bye.")
+        sys.exit()
+
+letters = list(set(letters))
+letters.sort()
+
+wordList = []
+for letter in letters:
+    select = "SELECT id, voice, enword FROM words where enword like \"{}%\" \
+                order by id".format(letter)
     c.execute(select)
     for item in c.fetchall():
-        voice = item[1]
-        filePath = "../"+voice
-        if not os.path.exists(filePath):
-            print(voice)
-        else:
-            print(item[2])
-#  for i in range(repeatTime):
-#      os.system("mpg321 "+filePath)
-#      time.sleep(3)
-#
-    nextLetter = input("Next letter? y(for yes) or n(for no)")
-    if nextLetter == 'n':
-        break
+        wordList.append(item)
+
+choice = input("Dictation in Order(input O) or in Random(input R)? Default is in order.")
+if choice in ['r', 'R']:
+    random.shuffle(wordList)
+
+repeat = input("Please choose repeating times (1-5), default is two times.")
+if repeat not in range(1, 6):
+    repeat = 2
+
+for word in wordList:
+    voice = word[1]
+    filePath = "../" + voice
+    if not os.path.exists(filePath):
+        print(voice)
     else:
-        continue
+        for i in range(repeatTime):
+            os.system("mpg321 " + filePath)
+            time.sleep(3)
 
 conn.close()
