@@ -1,6 +1,6 @@
 * 说明
   1. 整体是用 Flask 实现的一个 Restful 的 web app
-  2. 在 tools 目录下有一个 dictation.py 的程序，需要电脑安装 mpg321 这个软件。要停止只能直接关窗口。具体原因见原码。
+  2. 在 tools 目录下有一个 dictation.py 的程序，用来在命令行里进行听写。需要电脑安装 mpg321 （Linux，OS X） 这个软件，或者 [[https://mpg123.de/download.shtml][mpg123]] (Windows) 这个软件。要停止只能直接关窗口。具体原因见原码。
      #+begin_src sh
-     python3 dictation.py
+     python3 tools/dictation.py
      #+end_src
